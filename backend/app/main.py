@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import resources
+from .routers import resources, chat, settings
 from .utils.config import ensure_data_dir
 
 
@@ -29,6 +29,8 @@ app.add_middleware(
 
 
 app.include_router(resources.router)
+app.include_router(chat.router)
+app.include_router(settings.router)
 
 
 @app.get("/health")
