@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import resources, chat, settings, research, slides
+from .routers import resources, chat, settings, research, slides, notebooklm
 from .utils.config import ensure_data_dir
 
 
@@ -33,6 +33,7 @@ app.include_router(chat.router)
 app.include_router(settings.router)
 app.include_router(research.router)
 app.include_router(slides.router)
+app.include_router(notebooklm.router)
 
 
 @app.get("/health")
