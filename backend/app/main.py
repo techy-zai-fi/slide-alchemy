@@ -40,3 +40,15 @@ app.include_router(feedback.router)
 @app.get("/health")
 async def health():
     return {"status": "ok", "version": "0.1.0"}
+
+
+if __name__ == "__main__":
+    import argparse
+    import uvicorn
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=8741)
+    parser.add_argument("--host", type=str, default="127.0.0.1")
+    args = parser.parse_args()
+
+    uvicorn.run(app, host=args.host, port=args.port)
