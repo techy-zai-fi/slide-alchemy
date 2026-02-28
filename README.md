@@ -164,7 +164,7 @@ SlideAlchemy supports 5 model providers. You need at least one configured to use
 | Provider | API Key Required | Base URL | Recommended Models |
 |----------|-----------------|----------|--------------------|
 | **Ollama** | No (local) | `http://localhost:11434` | `gemma3:4b`, `llama3.1:8b`, `mistral` |
-| **OpenRouter** | Yes | `https://openrouter.ai/api/v1` | `google/gemma-3-27b-it`, `anthropic/claude-sonnet-4` |
+| **OpenRouter** | Yes | `https://openrouter.ai/api/v1` | `google/gemma-3-27b-it`, `meta-llama/llama-3-70b` |
 | **Groq** | Yes | `https://api.groq.com/openai/v1` | `llama-3.1-70b-versatile`, `mixtral-8x7b-32768` |
 | **OpenAI** | Yes | `https://api.openai.com/v1` | `gpt-4o`, `gpt-4o-mini` |
 | **Google Gemini** | Yes | Native SDK | `gemini-2.5-flash`, `gemini-2.5-pro` |
