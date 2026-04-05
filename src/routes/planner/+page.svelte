@@ -2,6 +2,8 @@
     import type { Slide } from '$lib/api/types';
     import SlideCard from '$lib/components/SlideCard.svelte';
 
+    const API = import.meta.env.VITE_API_URL || 'http://localhost:8741';
+
     let slides = $state<Slide[]>([]);
     let loading = $state(true);
     let projectId = $state('current');
@@ -9,7 +11,7 @@
     async function loadPlan() {
         loading = true;
         try {
-            const res = await fetch(`http://localhost:8741/api/slides/${projectId}`);
+            const res = await fetch(`${API}/api/slides/${projectId}`);
             if (res.ok) {
                 const plan = await res.json();
                 slides = plan.slides;
@@ -21,12 +23,12 @@
     async function generatePlan() {
         loading = true;
         try {
-            const ctxRes = await fetch(`http://localhost:8741/api/chat/qa/context?project_id=${projectId}`, { method: 'POST' });
+            const ctxRes = await fetch(`${API}/api/chat/qa/context?project_id=${projectId}`, { method: 'POST' });
             const qaContext = await ctxRes.json();
-            const resRes = await fetch('http://localhost:8741/api/resources/');
+            const resRes = await fetch(`${API}/api/resources/`);
             const resources = await resRes.json();
             const summaries = resources.filter((r: any) => r.parsed).map((r: any) => r.parsed.text.slice(0, 500));
-            const planRes = await fetch('http://localhost:8741/api/slides/generate-plan', {
+            const planRes = await fetch(`${API}/api/slides/generate-plan`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ project_id: projectId, qa_context: qaContext, resource_summaries: summaries }),
             });
@@ -38,7 +40,7 @@
 
     function handleEdit(updated: Slide) {
         slides = slides.map(s => s.id === updated.id ? updated : s);
-        fetch(`http://localhost:8741/api/slides/${projectId}/slide/${updated.id}`, {
+        fetch(`${API}/api/slides/${projectId}/slide/${updated.id}`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title: updated.title, key_points: updated.key_points }),
         });
@@ -46,7 +48,7 @@
 
     function handleDelete(id: string) {
         slides = slides.filter(s => s.id !== id);
-        fetch(`http://localhost:8741/api/slides/${projectId}/slide/${id}`, { method: 'DELETE' });
+        fetch(`${API}/api/slides/${projectId}/slide/${id}`, { method: 'DELETE' });
     }
 
     $effect(() => { loadPlan(); });

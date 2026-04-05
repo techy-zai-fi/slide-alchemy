@@ -1,6 +1,9 @@
 import asyncio
+import logging
 from typing import Optional
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 from ..models.resource import ParsedContent
 
@@ -54,7 +57,8 @@ class ResearchEngine:
             search = arxiv.Search(query=query, max_results=3, sort_by=arxiv.SortCriterion.Relevance)
             return [ResearchResult(source="arxiv", title=paper.title, snippet=paper.summary[:300],
                 url=paper.entry_id, source_type="academic") for paper in client.results(search)]
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Failed to search academic sources: {e}")
             return []
 
     async def search_youtube(self, query: str) -> list[ResearchResult]:
@@ -80,7 +84,8 @@ class ResearchEngine:
             return [ResearchResult(source="reddit", title=sub.title, snippet=(sub.selftext or "")[:300],
                 url=f"https://reddit.com{sub.permalink}", source_type="reddit")
                 for sub in reddit.subreddit("all").search(query, limit=3)]
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Failed to search Reddit: {e}")
             return []
 
     async def search_all(self, query: str) -> list[ResearchResult]:

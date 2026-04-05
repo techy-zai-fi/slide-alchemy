@@ -20,8 +20,8 @@ class ResourceType(str, Enum):
 
 class ParsedContent(BaseModel):
     text: str
-    sections: list[dict] = []
-    metadata: dict = {}
+    sections: list[dict] = Field(default_factory=list)
+    metadata: dict = Field(default_factory=dict)
 
 
 class ResourceCreate(BaseModel):

@@ -3,6 +3,8 @@
     import VariantPreview from '$lib/components/VariantPreview.svelte';
     import ProgressBar from '$lib/components/ProgressBar.svelte';
 
+    const API = import.meta.env.VITE_API_URL || 'http://localhost:8741';
+
     let projectId = $state('current');
     let variantCount = $state(1);
     let prompt = $state<any>(null);
@@ -15,23 +17,23 @@
     async function buildPrompt() {
         try {
             // Get Q&A context
-            const ctxRes = await fetch(`http://localhost:8741/api/chat/qa/context?project_id=${projectId}`, {
+            const ctxRes = await fetch(`${API}/api/chat/qa/context?project_id=${projectId}`, {
                 method: 'POST',
             });
             const qaContext = await ctxRes.json();
 
             // Get slides
-            const slidesRes = await fetch(`http://localhost:8741/api/slides/${projectId}`);
+            const slidesRes = await fetch(`${API}/api/slides/${projectId}`);
             const plan = await slidesRes.json();
 
             // Get resources
-            const resRes = await fetch('http://localhost:8741/api/resources/');
+            const resRes = await fetch(`${API}/api/resources/`);
             const resources = await resRes.json();
             const summaries = resources
                 .filter((r: any) => r.parsed)
                 .map((r: any) => r.parsed.text.slice(0, 500));
 
-            const promptRes = await fetch('http://localhost:8741/api/notebooklm/build-prompt', {
+            const promptRes = await fetch(`${API}/api/notebooklm/build-prompt`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -55,13 +57,13 @@
         progress = 0;
 
         try {
-            const resources = await fetch('http://localhost:8741/api/resources/').then(r => r.json());
+            const resources = await fetch(`${API}/api/resources/`).then(r => r.json());
             const sources = resources.map((r: any) => ({
                 type: r.type === 'web_url' || r.type === 'youtube' ? 'url' : 'text',
                 content: r.type === 'web_url' || r.type === 'youtube' ? r.source : r.parsed?.text?.slice(0, 5000) || '',
             }));
 
-            const res = await fetch('http://localhost:8741/api/notebooklm/generate', {
+            const res = await fetch(`${API}/api/notebooklm/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -160,7 +162,7 @@
                         <h3 class="font-medium">Variant {result.variant_number}</h3>
                         {#if result.pptx_path}
                             <a
-                                href={`http://localhost:8741/api/notebooklm/download/${result.pptx_path.split('/').pop()}`}
+                                href={`${API}/api/notebooklm/download/${result.pptx_path.split('/').pop()}`}
                                 class="inline-block mt-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm transition"
                                 download
                             >

@@ -1,5 +1,9 @@
+import logging
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 from ..models.slide import Slide, SlidePlan, SlideUpdate
 from ..services.model_router import ModelRouter
@@ -57,8 +61,8 @@ Generate the slide plan now."""
                 plan = SlidePlan(project_id=req.project_id, slides=slides, total_slides=len(slides))
                 _slide_plans[req.project_id] = plan
                 return plan
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Failed to parse LLM slide plan response: {e}")
 
     sections = [s.strip() for s in req.qa_context.get("sections", "Introduction,Main Content,Conclusion").split(",")]
     slides = [Slide(order=i, title=s, key_points=["Key point 1", "Key point 2"]) for i, s in enumerate(sections)]

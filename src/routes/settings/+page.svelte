@@ -1,4 +1,6 @@
 <script lang="ts">
+    const API = import.meta.env.VITE_API_URL || 'http://localhost:8741';
+
     let activeProvider = $state('ollama');
     let ollamaModel = $state('gemma4');
     let openrouterKey = $state('');
@@ -21,7 +23,7 @@
             openai: { provider: 'openai', model_name: openaiModel, api_key: openaiKey },
             gemini: { provider: 'gemini', model_name: geminiModel, api_key: geminiKey },
         };
-        await fetch('http://localhost:8741/api/chat/configure', {
+        await fetch(`${API}/api/chat/configure`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(configs[activeProvider]),
         });

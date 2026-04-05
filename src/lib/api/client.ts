@@ -1,6 +1,6 @@
 import type { Resource, Project, SlidePlan, Prompt, Feedback, PreferenceProfile, AppSettings, ChatMessage } from './types';
 
-const BASE_URL = 'http://localhost:8741';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8741';
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
     const res = await fetch(`${BASE_URL}${path}`, {

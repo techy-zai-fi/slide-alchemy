@@ -11,3 +11,9 @@ backend/dist/
 *.db
 .vite/
 .venv/
+.DS_Store
+.idea/
+.vscode/
+*.pem
+.env*
+!.env.example

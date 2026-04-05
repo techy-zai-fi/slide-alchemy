@@ -1,7 +1,10 @@
 import json
+import logging
 import os
 from pathlib import Path
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 from ..models.settings import AppSettings
 from .encryption import encrypt_value, decrypt_value
@@ -33,7 +36,8 @@ def load_settings() -> AppSettings:
         encrypted = CONFIG_FILE.read_text()
         decrypted = decrypt_value(encrypted)
         return AppSettings.model_validate_json(decrypted)
-    except Exception:
+    except Exception as e:
+        logger.warning(f"Failed to load settings, using defaults: {e}")
         return AppSettings()
 
 

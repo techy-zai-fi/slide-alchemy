@@ -2,6 +2,8 @@
     import type { ChatMessage } from '$lib/api/types';
     import ChatMessageComponent from '$lib/components/ChatMessage.svelte';
 
+    const API = import.meta.env.VITE_API_URL || 'http://localhost:8741';
+
     let messages = $state<ChatMessage[]>([]);
     let userInput = $state('');
     let projectId = $state('current');
@@ -12,7 +14,7 @@
     async function startQA() {
         loading = true;
         try {
-            const res = await fetch('http://localhost:8741/api/chat/qa/start?project_id=' + projectId, { method: 'POST' });
+            const res = await fetch(`${API}/api/chat/qa/start?project_id=${projectId}`, { method: 'POST' });
             const data = await res.json();
             currentQuestion = data.question;
             if (currentQuestion) {
@@ -30,7 +32,7 @@
         userInput = '';
         loading = true;
         try {
-            const res = await fetch('http://localhost:8741/api/chat/qa/answer', {
+            const res = await fetch(`${API}/api/chat/qa/answer`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ project_id: projectId, answer }),
             });
